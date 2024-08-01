@@ -1,0 +1,106 @@
+version: '3.8'
+
+networks:
+    pollux:
+
+services:
+    # pollux_framework:
+    #     image: ghcr.io/pollux-digital-twin/pollux-framework:latest
+    #     environment:
+    #         - POLLUX_PLANT=example_project
+    #     volumes:
+    #         - project-db:/opt/pollux-project
+    #     depends_on:
+    #         - influxdb     
+    #     networks:
+    #         - pollux
+            
+    pollux_gui:
+        image: ghcr.io/pollux-digital-twin/pollux-user-interface:latest
+        ports:
+            - 5445:5445
+        environment:
+            - POLLUX_FRONTEND_PORT=5445
+            - POLLUX_MYSQLDB_URL=mysqldb
+        restart: unless-stopped
+        volumes:
+            - project-db:/opt/pollux-project
+            - doc-db:/opt/pollux-documentation
+        depends_on:
+            - mysqldb
+        networks:
+            - pollux
+    
+    # pollux_doc:
+    #     image: ghcr.io/pollux-digital-twin/pollux-documentation:latest
+    #     restart: unless-stopped
+    #     volumes:
+    #         - doc-db:/opt/pollux-documentation
+    #     networks:
+    #         - pollux
+    
+    # pollux_project:
+    #     image: ghcr.io/pollux-digital-twin/pollux-project:latest
+    #     restart: unless-stopped
+    #     volumes:
+    #         - project-db:/opt/pollux-project
+    #     networks:
+    #         - pollux
+  
+    mysqldb:
+        image: mysql:8.0
+        ports:
+            - 3306:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=polluxdb
+        volumes:
+            - mysqldb_data-storage:/data/db
+            - mysqldb_var_lib-storage:/var/lib/mysql
+        restart: unless-stopped
+        networks:
+            - pollux
+      
+    grafana:
+        image: grafana/grafana:latest
+        ports:
+            - 3000:3000
+        environment:
+            - GF_SECURITY_ALLOW_EMBEDDING=true
+            #- GF_SECURITY_COOKIE_SAMESITE=none
+        volumes:
+            - grafana-storage:/var/lib/grafana
+        depends_on:
+            - influxdb    
+        networks:
+        - pollux    
+
+    influxdb:
+        image: influxdb:latest
+        ports:
+            - 8086:8086
+            - 8998:8088
+        environment:
+            - DOCKER_INFLUXDB_INIT_MODE=setup
+            - DOCKER_INFLUXDB_INIT_ORG=TNO
+            - DOCKER_INFLUXDB_INIT_BUCKET=pollux-project
+            - DOCKER_INFLUXDB_INIT_USERNAME=pollux-user
+            - DOCKER_INFLUXDB_INIT_PASSWORD=pollux-password
+            - DOCKER_INFLUXDB_INIT_TOKEN=pollux-token
+        volumes:
+            - influxdb-storage:/var/lib/influxdb
+            - influxdb2-storage:/var/lib/influxdb2
+            - influxdb2etc-storage:/etc/influxdb2
+        restart: unless-stopped
+        networks:
+            - pollux
+     
+volumes:
+    mysqldb_data-storage:
+    mysqldb_var_lib-storage:
+    grafana-storage:
+    influxdb-storage:
+    influxdb2-storage:
+    influxdb2etc-storage:
+    project-db:
+    doc-db:
