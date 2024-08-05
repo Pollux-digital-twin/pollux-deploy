@@ -15,21 +15,21 @@ services:
     #     networks:
     #         - pollux
             
-    pollux_gui:
-        image: ghcr.io/pollux-digital-twin/pollux-user-interface:latest
-        ports:
-            - 5445:5445
-        environment:
-            - POLLUX_FRONTEND_PORT=5445
-            - POLLUX_MYSQLDB_URL=mysqldb
-        restart: unless-stopped
-        volumes:
-            - project-db:/opt/pollux-project
-            - doc-db:/opt/pollux-documentation
-        depends_on:
-            - mysqldb
-        networks:
-            - pollux
+    # pollux_gui:
+    #     image: ghcr.io/pollux-digital-twin/pollux-user-interface:latest
+    #     ports:
+    #         - 5445:5445
+    #     environment:
+    #         - POLLUX_FRONTEND_PORT=5445
+    #         - POLLUX_MYSQLDB_URL=mysqldb
+    #     restart: unless-stopped
+    #     volumes:
+    #         - project-db:/opt/pollux-project
+    #         - doc-db:/opt/pollux-documentation
+    #     depends_on:
+    #         - mysqldb
+    #     networks:
+    #         - pollux
     
     # pollux_doc:
     #     image: ghcr.io/pollux-digital-twin/pollux-documentation:latest

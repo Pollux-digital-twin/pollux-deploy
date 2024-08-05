@@ -1,0 +1,25 @@
+FROM python:3.11
+
+RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
+
+RUN mkdir -p /opt/pollux-project
+RUN mkdir -p /opt/pollux-documentation
+RUN mkdir -p /opt/pollux-user-interface
+
+COPY ./pollux-user-interface/pyproject.toml /opt/pollux-user-interface
+COPY ./pollux-user-interface/README.md /opt/pollux-user-interface
+COPY ./pollux-user-interface/pollux_interface /opt/pollux-user-interface/pollux_interface
+
+
+WORKDIR /opt/pollux-user-interface
+RUN pip install poetry
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install -r requirements.txt
+
+ENV POLLUX_PROJECT_FOLDER=/opt/pollux-project
+ENV POLLUX_DOCUMENTATION_FOLDER=/opt/pollux-documentation
+ENV PYTHONPATH "${PYTHONPATH}:/opt/pollux-user-interface"
+
+WORKDIR /opt/pollux-user-interface/pollux_interface
+
+CMD ["python", "app.py"]
