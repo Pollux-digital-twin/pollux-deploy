@@ -1,0 +1,23 @@
+FROM python:3.11
+
+RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
+
+RUN mkdir -p /opt/pollux-project
+RUN mkdir -p /opt/pollux-framework
+
+COPY ./pollux-framework/pyproject.toml /opt/pollux-framework
+COPY ./pollux-framework/README.md /opt/pollux-framework
+
+WORKDIR /opt/pollux-framework
+RUN pip install poetry
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install -r requirements.txt
+
+COPY ./pollux-framework/pollux_framework /opt/pollux-framework/pollux_framework
+
+ENV POLLUX_PROJECT_FOLDER=/opt/pollux-project
+ENV PYTHONPATH "${PYTHONPATH}:/opt/pollux-framework"
+
+WORKDIR /opt/pollux-framework/pollux_framework
+
+CMD ["python", "app.py"]

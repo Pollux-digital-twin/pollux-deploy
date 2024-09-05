@@ -6,3 +6,6 @@ docker push ghcr.io/pollux-digital-twin/pollux-framework:latest
 
 docker build -f dockerfile_doc -t ghcr.io/pollux-digital-twin/pollux-documentation:latest ../.
 docker push ghcr.io/pollux-digital-twin/pollux-documentation:latest
+
+docker build -f dockerfile_project -t ghcr.io/pollux-digital-twin/pollux-project:latest ../.
+docker push ghcr.io/pollux-digital-twin/pollux-project:latest

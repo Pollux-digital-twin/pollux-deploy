@@ -1,0 +1,9 @@
+FROM python:3.11
+
+RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
+
+RUN mkdir -p /opt/pollux-documentation
+
+COPY ./pollux-documentation/build /opt/pollux-documentation/build
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

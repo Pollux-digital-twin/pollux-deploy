@@ -1,0 +1,12 @@
+FROM python:3.11
+
+RUN /usr/local/bin/python3.11 -m pip install --upgrade pip
+
+RUN mkdir -p /opt/pollux-project
+
+
+COPY ./pollux-project/_template /opt/pollux-project/_template
+
+WORKDIR /opt/pollux-project
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]

@@ -8,13 +8,13 @@ RUN mkdir -p /opt/pollux-user-interface
 
 COPY ./pollux-user-interface/pyproject.toml /opt/pollux-user-interface
 COPY ./pollux-user-interface/README.md /opt/pollux-user-interface
-COPY ./pollux-user-interface/pollux_interface /opt/pollux-user-interface/pollux_interface
-
 
 WORKDIR /opt/pollux-user-interface
 RUN pip install poetry
 RUN poetry export -f requirements.txt --output requirements.txt
 RUN pip install -r requirements.txt
+
+COPY ./pollux-user-interface/pollux_interface /opt/pollux-user-interface/pollux_interface
 
 ENV POLLUX_PROJECT_FOLDER=/opt/pollux-project
 ENV POLLUX_DOCUMENTATION_FOLDER=/opt/pollux-documentation
